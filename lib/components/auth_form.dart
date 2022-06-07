@@ -14,7 +14,8 @@ class _AuthFormState extends State<AuthForm> {
   final _formData = AuthFormData();
 
   void _submit() {
-    _formKey.currentState?.validate();
+    final isValid = _formKey.currentState?.validate() ?? false;
+    if (!isValid) return;
   }
 
   @override
@@ -33,20 +34,39 @@ class _AuthFormState extends State<AuthForm> {
                   initialValue: _formData.name,
                   onChanged: (name) => _formData.name = name,
                   decoration: InputDecoration(labelText: 'Nome'),
+                  validator: (_name) {
+                    final name = _name ?? '';
+                    if (name.trim().length < 5) {
+                      return 'Nome deve ter no mínimo 5 caracteres';
+                    }
+                    return null;
+                  },
                 ),
               TextFormField(
-                key: ValueKey('email'),
-                initialValue: _formData.email,
-                onChanged: (email) => _formData.email = email,
-                decoration: InputDecoration(labelText: 'E-mail'),
-              ),
+                  key: ValueKey('email'),
+                  initialValue: _formData.email,
+                  onChanged: (email) => _formData.email = email,
+                  decoration: InputDecoration(labelText: 'E-mail'),
+                  validator: (_email) {
+                    final email = _email ?? '';
+                    if (!email.contains('@')) {
+                      return 'E-mail informado não é válido';
+                    }
+                    return null;
+                  }),
               TextFormField(
-                key: ValueKey('password'),
-                initialValue: _formData.password,
-                onChanged: (password) => _formData.password = password,
-                obscureText: true,
-                decoration: InputDecoration(labelText: 'Senha'),
-              ),
+                  key: ValueKey('password'),
+                  initialValue: _formData.password,
+                  onChanged: (password) => _formData.password = password,
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: 'Senha'),
+                  validator: (_password) {
+                    final password = _password ?? '';
+                    if (password.length < 6) {
+                      return 'Senha deve ter no mínimo 6 caracteres';
+                    }
+                    return null;
+                  }),
               SizedBox(
                 height: 12,
               ),
